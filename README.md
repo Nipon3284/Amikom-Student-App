@@ -1,138 +1,139 @@
 # Amikom Student
 
-A modern mobile client application for the Universitas Amikom Purwokerto student portal, built with Flutter, Riverpod, and clean architectural principles.
+Aplikasi mobile client modern untuk portal mahasiswa Universitas Amikom Purwokerto yang dibangun menggunakan Flutter, Riverpod, dan prinsip arsitektur yang bersih.
 
 ---
 
-## Overview
+## Tentang Aplikasi
 
-Amikom Student provides a streamlined, responsive, and secure mobile interface for Universitas Amikom Purwokerto students to access academic data directly from their smartphones. The application communicates with the university portal (`student.amikompurwokerto.ac.id`), parsing and presenting schedules, academic records, attendance, and study plans in an intuitive dashboard.
-
----
-
-## Key Features
-
-- **Authentication & Security**
-  - Secure login with Student ID (NPM) and portal password.
-  - Biometric authentication (Fingerprint and Face ID) via `local_auth`.
-  - Encrypted local token and credential storage using `flutter_secure_storage`.
-  - Automated session persistence and cookie lifecycle management.
-
-- **Academic Dashboard**
-  - High-level overview of academic progress: Cumulative GPA (IPK), total credit units (SKS), and active semester.
-  - Quick action shortcuts and upcoming class indicators.
-
-- **Class & Exam Schedules**
-  - Daily and weekly lecture schedules with room numbers and lecturers.
-  - Integrated exam schedule view with timeline tracking.
-
-- **Attendance Management (Presensi)**
-  - Real-time attendance monitoring per course.
-  - Attendance threshold alerts to ensure compliance with exam eligibility.
-
-- **Study Plan (KRS) & Academic Grades (KHS)**
-  - View enrolled courses and credit weights in the current semester.
-  - Semester-by-semester Grade Point Average (IPS) and cumulative transcript review.
-
-- **User Experience & Personalization**
-  - Adaptive Dark and Light themes.
-  - Smooth loading states with Shimmer effects.
-  - Offline-resilient state caching with Riverpod and SharedPreferences.
+Amikom Student dirancang untuk memberikan kemudahan, kecepatan, dan kenyamanan bagi mahasiswa Universitas Amikom Purwokerto dalam mengakses data akademik langsung dari smartphone. Aplikasi ini terhubung langsung dengan sistem portal resmi universitas (`student.amikompurwokerto.ac.id`), memproses dan menampilkan jadwal perkuliahan, riwayat nilai, presensi kehadiran, serta kartu rencana studi secara terstruktur dan terintegrasi.
 
 ---
 
-## Tech Stack & Architecture
+## Fitur Utama
 
-- **Framework**: [Flutter](https://flutter.dev) (Dart SDK ^3.11.0)
-- **State Management**: [Riverpod](https://riverpod.dev) (`flutter_riverpod`)
-- **Networking & Session**: [Dio](https://pub.dev/packages/dio), `dio_cookie_manager`, `cookie_jar`
-- **Data Extraction**: `html` parser
-- **Local Persistence & Security**: `flutter_secure_storage`, `shared_preferences`, `local_auth`
-- **Typography & Icons**: `google_fonts`, `lucide_icons`
+- **Otentikasi & Keamanan**
+  - Masuk menggunakan Nomor Pokok Mahasiswa (NPM) dan kata sandi portal akademik.
+  - Dukungan otentikasi biometrik (Sidik Jari dan Face ID) menggunakan `local_auth`.
+  - Penyimpanan data kredensial terenkripsi lokal menggunakan `flutter_secure_storage`.
+  - Pengelolaan sesi dan siklus hidup cookie secara otomatis.
 
-### Project Structure
+- **Dasbor Akademik**
+  - Ringkasan komprehensif data akademik: Indeks Prestasi Kumulatif (IPK), total perolehan SKS, dan semester aktif.
+  - Navigasi cepat dan indikator kelas kuliah terdekat.
+
+- **Jadwal Kuliah & Jadwal Ujian**
+  - Jadwal kuliah harian dan mingguan lengkap dengan ruang kelas serta dosen pengampu.
+  - Pelacakan jadwal ujian semester secara terpadu.
+
+- **Rekapitulasi Presensi Kehadiran**
+  - Pemantauan tingkat kehadiran per mata kuliah secara real-time.
+  - Peringatan batas minimal persentase kehadiran untuk syarat kelayakan ujian.
+
+- **Kartu Rencana Studi (KRS) & Kartu Hasil Studi (KHS)**
+  - Tinjauan daftar mata kuliah dan beban SKS yang diambil pada semester aktif.
+  - Tampilan Indeks Prestasi Semester (IPS) berkala dan transkrip nilai kumulatif.
+
+- **Kenyamanan Antarmuka & Personalisasi**
+  - Dukungan tema otomatis Mode Terang (Light Mode) dan Mode Gelap (Dark Mode).
+  - Indikator pemuatan animasi dengan efek Shimmer.
+  - Mekanisme penyimpanan cache lokal untuk menjaga akses data saat koneksi lambat.
+
+---
+
+## Teknologi & Arsitektur
+
+- **Kerangka Kerja**: [Flutter](https://flutter.dev) (Dart SDK ^3.11.0)
+- **Manajemen State**: [Riverpod](https://riverpod.dev) (`flutter_riverpod`)
+- **Jaringan & Sesi**: [Dio](https://pub.dev/packages/dio), `dio_cookie_manager`, `cookie_jar`
+- **Ekstraksi Data**: `html` parser
+- **Penyimpanan Lokal & Keamanan**: `flutter_secure_storage`, `shared_preferences`, `local_auth`
+- **Tipografi & Ikon**: `google_fonts`, `lucide_icons`
+
+### Struktur Direktori Proyek
 
 ```text
 lib/
 ├── core/
-│   ├── models/        # Data models (Student profile, Schedules, Grades, Attendance)
-│   ├── network/       # HTTP client, Cookie manager, and Portal scraper
-│   ├── providers/     # Global state and Riverpod providers
-│   ├── storage/       # Secure storage and persistent preferences
-│   ├── theme/         # Design tokens, color schemes, and typography
-│   └── widgets/       # Shared UI components and layout helpers
+│   ├── models/        # Model data (Profil Mahasiswa, Jadwal, Nilai, Presensi)
+│   ├── network/       # Klien HTTP, Pengelola Cookie, dan Parser Portal
+│   ├── providers/     # State global dan Riverpod providers
+│   ├── storage/       # Penyimpanan terenkripsi dan preferensi lokal
+│   ├── theme/         # Token desain, palet warna, dan tipografi
+│   └── widgets/       # Komponen UI bersama dan tata letak
 ├── features/
 │   ├── dashboard_screen.dart
-│   ├── jadwal/        # Schedule components and views
-│   ├── presensi/      # Attendance records and views
+│   ├── jadwal/        # Komponen dan tampilan jadwal kuliah/ujian
+│   ├── presensi/      # Rekapitulasi kehadiran dan modal validasi
 │   ├── krs_screen.dart
 │   ├── nilai_screen.dart
 │   ├── login_screen.dart
 │   ├── profile_screen.dart
 │   └── splash_screen.dart
-└── main.dart          # Application entrypoint
+└── main.dart          # Titik masuk utama aplikasi
 ```
 
 ---
 
-## Installation
+## Panduan Instalasi
 
-### Unduh Aplikasi (Android)
+### Unduh Langsung Berkas APK (Android)
 
-Pengguna dapat langsung mengunduh dan memasang berkas APK rilis terbaru tanpa perlu melakukan *build* dari kode sumber:
+Bagi pengguna yang ingin langsung memasang aplikasi di perangkat Android tanpa perlu mengompilasi dari kode sumber:
 
-1. Unduh berkas APK versi terbaru melalui tautan resmi:
-   **[Unduh APK Versi Terbaru (GitHub Releases)](https://github.com/Nipon3284/Amikom-Student-App/releases/latest)**
-2. Buka berkas `.apk` yang telah selesai diunduh di ponsel Android Anda.
-3. Jika muncul dialog izin keamanan, aktifkan opsi **Izinkan instalasi dari sumber ini** (*Install unknown apps*).
-4. Selesaikan proses instalasi, buka aplikasi **Amikom Student**, lalu masuk menggunakan NPM dan kata sandi portal Anda.
+1. Unduh berkas APK rilis terbaru melalui tautan resmi:
+   **[Unduh Berkas APK Versi Terbaru (GitHub Releases)](https://github.com/Nipon3284/Amikom-Student-App/releases/latest)**
+2. Buka berkas `.apk` yang telah selesai diunduh pada ponsel Android Anda.
+3. Apabila muncul notifikasi keamanan sistem, berikan izin pada opsi **Izinkan penginstalan aplikasi dari sumber ini** (*Install unknown apps*).
+4. Lanjutkan proses pemasangan hingga selesai.
+5. Buka aplikasi **Amikom Student**, lalu masuk menggunakan NPM dan kata sandi portal akademik Anda.
 
 ---
 
-## Development & Build from Source
+## Panduan Pengembangan & Kompilasi Sumber
 
-Bagian ini ditujukan bagi pengembang yang ingin berkontribusi atau menjalankan aplikasi dari kode sumber:
+Bagian ini ditujukan untuk pengembang yang ingin memodifikasi atau membangun aplikasi langsung dari kode sumber:
 
-### Prerequisites
+### Prasyarat Sistem
 
-- Flutter SDK (versi 3.19 atau lebih baru)
+- Flutter SDK (versi 3.19 atau yang lebih baru)
 - Dart SDK (^3.11.0)
-- Android Studio atau VS Code dengan Flutter Extension
-- Android SDK (API level 21 minimum)
+- Android Studio atau Visual Studio Code dengan ekstensi Flutter
+- Android SDK (API level minimal 21)
 
-### Build Instructions
+### Langkah Kompilasi
 
-1. Clone repositori:
+1. Gandakan repositori ini ke komputer lokal Anda:
    ```bash
    git clone https://github.com/Nipon3284/Amikom-Student-App.git
    cd Amikom-Student-App
    ```
 
-2. Pasang dependensi:
+2. Pasang paket dependensi:
    ```bash
    flutter pub get
    ```
 
-3. Jalankan aplikasi:
+3. Jalankan aplikasi pada perangkat atau emulator:
    ```bash
    flutter run
    ```
 
-4. Buat berkas APK release mandiri:
+4. Buat paket instalasi APK Release mandiri:
    ```bash
    flutter build apk --release
    ```
-   Berkas APK hasil build berada di:
+   Berkas APK hasil kompilasi akan tersedia pada direktori:
    `build/app/outputs/flutter-apk/app-release.apk`
 
 ---
 
-## Disclaimer
+## Batasan & Penafian
 
-This is an independent community project developed for Universitas Amikom Purwokerto students and is not officially affiliated with, maintained by, or endorsed by Universitas Amikom Purwokerto. All portal endpoints and data structures belong to their respective university systems.
+Aplikasi ini merupakan proyek independen dari komunitas mahasiswa untuk mahasiswa Universitas Amikom Purwokerto dan tidak berafiliasi secara langsung, disponsori, atau dikelola secara resmi oleh pihak Universitas Amikom Purwokerto. Hak cipta atas sistem portal dan data akademik sepenuhnya milik universitas terkait.
 
 ---
 
-## License
+## Lisensi
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+Proyek ini dirilis di bawah naungan Lisensi MIT. Silakan merujuk pada berkas [LICENSE](LICENSE) untuk informasi lebih lanjut.
