@@ -39,6 +39,12 @@ Amikom Student dirancang untuk memberikan kemudahan, kecepatan, dan kenyamanan b
   - Indikator pemuatan animasi dengan efek Shimmer.
   - Mekanisme penyimpanan cache lokal untuk menjaga akses data saat koneksi lambat.
 
+- **Pembaruan Otomatis Aplikasi (In-App Update)**
+  - Deteksi ketersediaan versi rilis terbaru secara otomatis langsung dari GitHub Releases API.
+  - Unduh berkas APK di latar belakang dengan indikator persentase progres.
+  - Pemasangan pembaruan instan terintegrasi dengan penginstal paket Android (Package Installer).
+  - Opsi pengecekan pembaruan manual langsung dari menu Pengaturan Profil.
+
 ---
 
 ## Teknologi & Arsitektur

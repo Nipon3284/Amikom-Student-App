@@ -6,6 +6,8 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text_styles.dart';
 import '../core/providers/portal_provider.dart';
+import '../core/providers/app_update_provider.dart';
+import '../core/widgets/app_update_dialog.dart';
 import 'dashboard_screen.dart';
 import 'jadwal_screen.dart';
 import 'nilai_screen.dart';
@@ -31,7 +33,24 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(appUpdateProvider.notifier).checkForUpdate(manual: false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen<AppUpdateState>(appUpdateProvider, (previous, next) {
+      if ((next.status == UpdateStatus.available || next.status == UpdateStatus.readyToInstall) &&
+          previous?.status != next.status &&
+          !next.isManualCheck &&
+          next.updateInfo != null) {
+        AppUpdateDialog.show(context, next.updateInfo!);
+      }
+    });
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final profileAsync = ref.watch(profileNotifierProvider);
 

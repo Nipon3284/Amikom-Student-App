@@ -48,6 +48,8 @@ dependencies:
   shimmer: ^3.0.0
   intl: ^0.20.3
   connectivity_plus: ^7.3.2
+  package_info_plus: ^10.2.2
+  open_filex: ^5.0.0
 
 dev_dependencies:
   flutter_test:

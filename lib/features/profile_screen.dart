@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text_styles.dart';
 import '../core/providers/portal_provider.dart';
+import '../core/providers/app_update_provider.dart';
+import '../core/widgets/app_update_dialog.dart';
 import '../core/widgets/status_badge.dart';
 import 'login_screen.dart';
 
@@ -18,12 +21,23 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _biometricEnabled = false;
+  String _appVersion = '1.0.0';
   final LocalAuthentication _localAuth = LocalAuthentication();
 
   @override
   void initState() {
     super.initState();
     _loadBiometricState();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() => _appVersion = info.version);
+      }
+    } catch (_) {}
   }
 
   Future<void> _loadBiometricState() async {
@@ -109,6 +123,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final profileAsync = ref.watch(profileNotifierProvider);
     final themeMode = ref.watch(themeProvider);
+    final updateState = ref.watch(appUpdateProvider);
+
+    ref.listen<AppUpdateState>(appUpdateProvider, (prev, next) {
+      if (!next.isManualCheck) return;
+      if (next.status == UpdateStatus.upToDate && prev?.status != UpdateStatus.upToDate) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Aplikasi sudah menggunakan versi terbaru (v$_appVersion)',
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else if (next.status == UpdateStatus.error && prev?.status != UpdateStatus.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage ?? 'Gagal memeriksa pembaruan.'),
+            backgroundColor: AppColors.danger,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else if ((next.status == UpdateStatus.available || next.status == UpdateStatus.readyToInstall) &&
+          prev?.status != next.status &&
+          next.updateInfo != null) {
+        AppUpdateDialog.show(context, next.updateInfo!);
+      }
+    });
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -261,6 +302,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     }
                   },
                 ),
+                const Divider(height: 1),
+
+                // Periksa Pembaruan
+                ListTile(
+                  leading: const Icon(LucideIcons.arrowUpCircle, size: 20),
+                  title: Text('Periksa Pembaruan', style: AppTextStyles.labelBold(isDark)),
+                  subtitle: Text(
+                    'Versi v$_appVersion (Ketuk untuk memeriksa)',
+                    style: AppTextStyles.caption(isDark),
+                  ),
+                  trailing: updateState.status == UpdateStatus.checking && updateState.isManualCheck
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(LucideIcons.chevronRight, size: 16),
+                  onTap: updateState.status == UpdateStatus.checking
+                      ? null
+                      : () async {
+                          HapticFeedback.lightImpact();
+                          await ref.read(appUpdateProvider.notifier).checkForUpdate(manual: true);
+                        },
+                ),
               ],
             ),
           ),
@@ -282,7 +347,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: 28),
           Center(
             child: Text(
-              'Amikom Student Android v1.0.0\nUniversitas Amikom Purwokerto',
+              'Amikom Student Android v$_appVersion\nUniversitas Amikom Purwokerto',
               textAlign: TextAlign.center,
               style: AppTextStyles.caption(isDark),
             ),
