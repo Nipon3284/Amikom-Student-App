@@ -75,36 +75,55 @@ lib/
 
 ---
 
-## Getting Started
+## Installation
+
+### Unduh Aplikasi (Android)
+
+Pengguna dapat langsung mengunduh dan memasang berkas APK rilis terbaru tanpa perlu melakukan *build* dari kode sumber:
+
+1. Unduh berkas APK versi terbaru melalui tautan resmi:
+   **[Unduh APK Versi Terbaru (GitHub Releases)](https://github.com/Nipon3284/Amikom-Student-App/releases/latest)**
+2. Buka berkas `.apk` yang telah selesai diunduh di ponsel Android Anda.
+3. Jika muncul dialog izin keamanan, aktifkan opsi **Izinkan instalasi dari sumber ini** (*Install unknown apps*).
+4. Selesaikan proses instalasi, buka aplikasi **Amikom Student**, lalu masuk menggunakan NPM dan kata sandi portal Anda.
+
+---
+
+## Development & Build from Source
+
+Bagian ini ditujukan bagi pengembang yang ingin berkontribusi atau menjalankan aplikasi dari kode sumber:
 
 ### Prerequisites
 
-- Flutter SDK (version 3.19 or later recommended)
-- Android Studio or VS Code with Flutter extension
-- Android SDK (API level 21 minimum) or iOS development environment
+- Flutter SDK (versi 3.19 atau lebih baru)
+- Dart SDK (^3.11.0)
+- Android Studio atau VS Code dengan Flutter Extension
+- Android SDK (API level 21 minimum)
 
-### Installation
+### Build Instructions
 
-1. **Clone the repository:**
+1. Clone repositori:
    ```bash
-   git clone https://github.com/<username>/amikom-student.git
-   cd amikom-student
+   git clone https://github.com/Nipon3284/Amikom-Student-App.git
+   cd Amikom-Student-App
    ```
 
-2. **Install dependencies:**
+2. Pasang dependensi:
    ```bash
    flutter pub get
    ```
 
-3. **Run the development build:**
+3. Jalankan aplikasi:
    ```bash
    flutter run
    ```
 
-4. **Build APK for Android:**
+4. Buat berkas APK release mandiri:
    ```bash
    flutter build apk --release
    ```
+   Berkas APK hasil build berada di:
+   `build/app/outputs/flutter-apk/app-release.apk`
 
 ---
 
