@@ -380,6 +380,9 @@ class PortalClient {
 
       final items = <PresensiSessionItem>[];
       int prosentaseHadir = 0;
+      int prosentaseIzin = 0;
+      int prosentaseTanpaKeterangan = 0;
+      int prosentaseSakit = 0;
       int prosentaseBelum = 0;
       int akumulasiNilai = 0;
 
@@ -416,6 +419,19 @@ class PortalClient {
                 praktek = match.group(4)!;
                 jenisPilih = match.group(5)!;
               }
+            } else {
+              final upper = status.toUpperCase();
+              if (upper.contains('H')) {
+                status = 'H';
+              } else if (upper.contains('I')) {
+                status = 'I';
+              } else if (upper.contains('S')) {
+                status = 'S';
+              } else if (upper.contains('A')) {
+                status = 'A';
+              } else if (upper.contains('B')) {
+                status = 'B';
+              }
             }
 
             items.add(
@@ -431,12 +447,20 @@ class PortalClient {
               ),
             );
           } else if (tds.length == 2) {
-            final label = tds[0].text.trim();
+            final label = tds[0].text.trim().toLowerCase();
             final val = int.tryParse(tds[1].text.trim()) ?? 0;
-            if (label.contains('Prosentase Hadir')) {
+            if (label.contains('prosentase hadir') || label.contains('persentase hadir')) {
               prosentaseHadir = val;
-            } else if (label.contains('Prosentase Belum Validasi')) {
+            } else if (label.contains('prosentase izin') || label.contains('persentase izin') || label.contains('ijin')) {
+              prosentaseIzin = val;
+            } else if (label.contains('tanpa keterangan') || label.contains('alpa')) {
+              prosentaseTanpaKeterangan = val;
+            } else if (label.contains('prosentase sakit') || label.contains('persentase sakit')) {
+              prosentaseSakit = val;
+            } else if (label.contains('belum validasi')) {
               prosentaseBelum = val;
+            } else if (label.contains('akumulasi nilai')) {
+              akumulasiNilai = val;
             }
           }
         }
@@ -447,8 +471,22 @@ class PortalClient {
         final rows = summaryTable.querySelectorAll('tr');
         for (final row in rows) {
           final tds = row.querySelectorAll('td');
-          if (tds.length == 2 && tds[0].text.contains('Akumulasi Nilai Presensi')) {
-            akumulasiNilai = int.tryParse(tds[1].text.trim()) ?? akumulasiNilai;
+          if (tds.length == 2) {
+            final label = tds[0].text.trim().toLowerCase();
+            final val = int.tryParse(tds[1].text.trim()) ?? 0;
+            if (label.contains('akumulasi nilai')) {
+              akumulasiNilai = val;
+            } else if (label.contains('prosentase hadir') || label.contains('persentase hadir')) {
+              prosentaseHadir = val;
+            } else if (label.contains('prosentase izin') || label.contains('ijin')) {
+              prosentaseIzin = val;
+            } else if (label.contains('tanpa keterangan')) {
+              prosentaseTanpaKeterangan = val;
+            } else if (label.contains('prosentase sakit')) {
+              prosentaseSakit = val;
+            } else if (label.contains('belum validasi')) {
+              prosentaseBelum = val;
+            }
           }
         }
       }
@@ -458,6 +496,9 @@ class PortalClient {
         namaDosen: namaDosen,
         items: items,
         prosentaseHadir: prosentaseHadir,
+        prosentaseIzin: prosentaseIzin,
+        prosentaseTanpaKeterangan: prosentaseTanpaKeterangan,
+        prosentaseSakit: prosentaseSakit,
         prosentaseBelumValidasi: prosentaseBelum,
         akumulasiNilai: akumulasiNilai,
       );

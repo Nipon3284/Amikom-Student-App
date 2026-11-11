@@ -477,39 +477,7 @@ class _PresensiScreenState extends ConsumerState<PresensiScreen> {
                       const SizedBox(width: 12),
 
                       // Status Badge / Action Button
-                      if (isPending) ...[
-                        ElevatedButton(
-                          onPressed: () => _openValidationModal(session),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.amikomGold,
-                            foregroundColor: AppColors.neutral950,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Text(
-                                'B',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              SizedBox(width: 6),
-                              Text('Validasi', style: TextStyle(fontSize: 12)),
-                            ],
-                          ),
-                        ),
-                      ] else ...[
-                        const StatusBadge(
-                          label: 'Hadir (H)',
-                          variant: BadgeVariant.success,
-                          icon: LucideIcons.check,
-                        ),
-                      ],
+                      _buildSessionStatusBadge(session),
                     ],
                   ),
                 );
@@ -517,7 +485,7 @@ class _PresensiScreenState extends ConsumerState<PresensiScreen> {
 
               const SizedBox(height: 16),
 
-              // Summary Stats Card
+              // Summary Stats Card (5 Prosentase + Akumulasi Nilai)
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -530,30 +498,82 @@ class _PresensiScreenState extends ConsumerState<PresensiScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Rekapitulasi Kehadiran', style: AppTextStyles.titleMedium(isDark)),
-                    const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildStatBox(
-                          'Persentase Hadir',
-                          '${_detailData!.prosentaseHadir}%',
-                          AppColors.success,
-                          isDark,
+                        Text('Rekapitulasi Kehadiran', style: AppTextStyles.titleMedium(isDark)),
+                        if (_detailData!.akumulasiNilai > 0)
+                          StatusBadge(
+                            label: 'Nilai: ${_detailData!.akumulasiNilai}',
+                            variant: BadgeVariant.primary,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    // Row 1: Hadir (H), Izin (I), Sakit (S)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildStatBox(
+                            'Hadir (H)',
+                            '${_detailData!.prosentaseHadir}%',
+                            AppColors.success,
+                            isDark,
+                          ),
                         ),
-                        _buildStatBox(
-                          'Belum Validasi',
-                          '${_detailData!.prosentaseBelumValidasi}%',
-                          _detailData!.prosentaseBelumValidasi > 0
-                              ? AppColors.warning
-                              : AppColors.neutral600,
-                          isDark,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildStatBox(
+                            'Izin (I)',
+                            '${_detailData!.prosentaseIzin}%',
+                            isDark ? const Color(0xFF93C5FD) : const Color(0xFF1D4ED8),
+                            isDark,
+                          ),
                         ),
-                        _buildStatBox(
-                          'Nilai Presensi',
-                          '${_detailData!.akumulasiNilai}',
-                          isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-                          isDark,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildStatBox(
+                            'Sakit (S)',
+                            '${_detailData!.prosentaseSakit}%',
+                            isDark ? const Color(0xFFFDE68A) : const Color(0xFFD97706),
+                            isDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    // Row 2: Tanpa Keterangan (A), Belum Validasi (B), Akumulasi Nilai
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildStatBox(
+                            'Alpa (A)',
+                            '${_detailData!.prosentaseTanpaKeterangan}%',
+                            _detailData!.prosentaseTanpaKeterangan > 0
+                                ? AppColors.danger
+                                : (isDark ? AppColors.darkTextTertiary : AppColors.lightTextTertiary),
+                            isDark,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildStatBox(
+                            'Belum Valid (B)',
+                            '${_detailData!.prosentaseBelumValidasi}%',
+                            _detailData!.prosentaseBelumValidasi > 0
+                                ? AppColors.amikomGold
+                                : (isDark ? AppColors.darkTextTertiary : AppColors.lightTextTertiary),
+                            isDark,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildStatBox(
+                            'Nilai Presensi',
+                            '${_detailData!.akumulasiNilai}',
+                            isDark ? AppColors.amikomPurpleLight : AppColors.amikomPurple,
+                            isDark,
+                          ),
                         ),
                       ],
                     ),
@@ -569,6 +589,68 @@ class _PresensiScreenState extends ConsumerState<PresensiScreen> {
   ],
 ),
     );
+  }
+
+  Widget _buildSessionStatusBadge(PresensiSessionItem session) {
+    if (session.isPending) {
+      return ElevatedButton(
+        onPressed: () => _openValidationModal(session),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.amikomGold,
+          foregroundColor: AppColors.neutral950,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text(
+              'B',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            SizedBox(width: 6),
+            Text('Validasi', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+          ],
+        ),
+      );
+    }
+
+    final status = session.status.toUpperCase();
+    if (status == 'H') {
+      return const StatusBadge(
+        label: 'Hadir (H)',
+        variant: BadgeVariant.success,
+        icon: LucideIcons.check,
+      );
+    } else if (status == 'I') {
+      return const StatusBadge(
+        label: 'Izin (I)',
+        variant: BadgeVariant.info,
+        icon: LucideIcons.fileText,
+      );
+    } else if (status == 'S') {
+      return const StatusBadge(
+        label: 'Sakit (S)',
+        variant: BadgeVariant.warning,
+        icon: LucideIcons.activity,
+      );
+    } else if (status == 'A') {
+      return const StatusBadge(
+        label: 'Alpa (A)',
+        variant: BadgeVariant.danger,
+        icon: LucideIcons.x,
+      );
+    } else {
+      return StatusBadge(
+        label: session.statusDisplay,
+        variant: BadgeVariant.neutral,
+      );
+    }
   }
 
   Widget _buildStatBox(String label, String value, Color color, bool isDark) {

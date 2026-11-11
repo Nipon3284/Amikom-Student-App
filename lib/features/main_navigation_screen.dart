@@ -23,8 +23,6 @@ class MainNavigationScreen extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _screens = const [
     DashboardScreen(),
     JadwalScreen(),
@@ -202,7 +200,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
           const NetworkStatusBar(),
           Expanded(
             child: IndexedStack(
-              index: _currentIndex,
+              index: ref.watch(bottomNavIndexProvider),
               children: _screens,
             ),
           ),
@@ -237,17 +235,16 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   }
 
   Widget _buildNavItem(int index, IconData icon, String label, bool isDark) {
-    final isSelected = _currentIndex == index;
+    final currentIndex = ref.watch(bottomNavIndexProvider);
+    final isSelected = currentIndex == index;
     final activeColor = isDark ? AppColors.amikomPurpleLight : AppColors.amikomPurple;
     final inactiveColor = isDark ? AppColors.darkTextTertiary : AppColors.lightTextTertiary;
 
     return InkWell(
       onTap: () {
-        if (_currentIndex != index) {
+        if (currentIndex != index) {
           HapticFeedback.selectionClick();
-          setState(() {
-            _currentIndex = index;
-          });
+          ref.read(bottomNavIndexProvider.notifier).state = index;
         }
       },
       borderRadius: BorderRadius.circular(16),

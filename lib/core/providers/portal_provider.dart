@@ -56,6 +56,9 @@ final themeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) 
   return ThemeModeNotifier(cache);
 });
 
+// Main Navigation Bottom Bar Index Provider for Cross-Screen Tab Switching
+final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
+
 // Auth State
 enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
 

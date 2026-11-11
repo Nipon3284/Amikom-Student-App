@@ -464,31 +464,63 @@ class _JadwalDetailPresensiSheetState
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            _buildStatItem(
-                              'Kehadiran',
-                              '${_presensiData!.prosentaseHadir}%',
-                              AppColors.success,
-                              isDark,
+                            Expanded(
+                              child: _buildStatItem(
+                                'Hadir (H)',
+                                '${_presensiData!.prosentaseHadir}%',
+                                AppColors.success,
+                                isDark,
+                              ),
                             ),
-                            _buildStatItem(
-                              'Belum Validasi',
-                              '${_presensiData!.prosentaseBelumValidasi}%',
-                              _presensiData!.prosentaseBelumValidasi > 0
-                                  ? AppColors.amikomGold
-                                  : (isDark
-                                      ? AppColors.darkTextTertiary
-                                      : AppColors.lightTextTertiary),
-                              isDark,
+                            Expanded(
+                              child: _buildStatItem(
+                                'Izin (I)',
+                                '${_presensiData!.prosentaseIzin}%',
+                                isDark ? const Color(0xFF93C5FD) : const Color(0xFF1D4ED8),
+                                isDark,
+                              ),
                             ),
-                            _buildStatItem(
-                              'Nilai Presensi',
-                              '${_presensiData!.akumulasiNilai}',
-                              isDark
-                                  ? AppColors.amikomPurpleLight
-                                  : AppColors.amikomPurple,
-                              isDark,
+                            Expanded(
+                              child: _buildStatItem(
+                                'Sakit (S)',
+                                '${_presensiData!.prosentaseSakit}%',
+                                isDark ? const Color(0xFFFDE68A) : const Color(0xFFD97706),
+                                isDark,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildStatItem(
+                                'Alpa (A)',
+                                '${_presensiData!.prosentaseTanpaKeterangan}%',
+                                _presensiData!.prosentaseTanpaKeterangan > 0
+                                    ? AppColors.danger
+                                    : (isDark ? AppColors.darkTextTertiary : AppColors.lightTextTertiary),
+                                isDark,
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildStatItem(
+                                'Belum Valid (B)',
+                                '${_presensiData!.prosentaseBelumValidasi}%',
+                                _presensiData!.prosentaseBelumValidasi > 0
+                                    ? AppColors.amikomGold
+                                    : (isDark ? AppColors.darkTextTertiary : AppColors.lightTextTertiary),
+                                isDark,
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildStatItem(
+                                'Nilai Presensi',
+                                '${_presensiData!.akumulasiNilai}',
+                                isDark ? AppColors.amikomPurpleLight : AppColors.amikomPurple,
+                                isDark,
+                              ),
                             ),
                           ],
                         ),
@@ -568,49 +600,7 @@ class _JadwalDetailPresensiSheetState
                           const SizedBox(width: 8),
 
                           // Status or Quick Validate Button
-                          if (isPending) ...[
-                            ElevatedButton(
-                              onPressed: () => _openValidationModal(session),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.amikomGold,
-                                foregroundColor: AppColors.neutral950,
-                                elevation: 0,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  Text(
-                                    'B',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    'Validasi',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ] else ...[
-                            const StatusBadge(
-                              label: 'Hadir (H)',
-                              variant: BadgeVariant.success,
-                              icon: LucideIcons.check,
-                            ),
-                          ],
+                          _buildSessionStatusBadge(session, isDark),
                         ],
                       ),
                     );
@@ -655,6 +645,78 @@ class _JadwalDetailPresensiSheetState
         ],
       ),
     );
+  }
+
+  Widget _buildSessionStatusBadge(PresensiSessionItem session, bool isDark) {
+    if (session.isPending) {
+      return ElevatedButton(
+        onPressed: () => _openValidationModal(session),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.amikomGold,
+          foregroundColor: AppColors.neutral950,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text(
+              'B',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(width: 6),
+            Text(
+              'Validasi',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final status = session.status.toUpperCase();
+    if (status == 'H') {
+      return const StatusBadge(
+        label: 'Hadir (H)',
+        variant: BadgeVariant.success,
+        icon: LucideIcons.check,
+      );
+    } else if (status == 'I') {
+      return const StatusBadge(
+        label: 'Izin (I)',
+        variant: BadgeVariant.info,
+        icon: LucideIcons.fileText,
+      );
+    } else if (status == 'S') {
+      return const StatusBadge(
+        label: 'Sakit (S)',
+        variant: BadgeVariant.warning,
+        icon: LucideIcons.activity,
+      );
+    } else if (status == 'A') {
+      return const StatusBadge(
+        label: 'Alpa (A)',
+        variant: BadgeVariant.danger,
+        icon: LucideIcons.x,
+      );
+    } else {
+      return StatusBadge(
+        label: session.statusDisplay,
+        variant: BadgeVariant.neutral,
+      );
+    }
   }
 
   Widget _buildStatItem(

@@ -30,7 +30,7 @@ class UnvalidatedCourse {
 class PresensiSessionItem {
   final String tanggal;
   final String materi;
-  final String status; // 'H' atau 'B'
+  final String status; // 'H', 'I', 'S', 'A', 'B'
   final int? editId;
   final String namaMk;
   final String kuliahTeori;
@@ -50,6 +50,26 @@ class PresensiSessionItem {
 
   bool get isPending => status.toUpperCase() == 'B';
   bool get isPresent => status.toUpperCase() == 'H';
+  bool get isPermitted => status.toUpperCase() == 'I';
+  bool get isSick => status.toUpperCase() == 'S';
+  bool get isAlpha => status.toUpperCase() == 'A';
+
+  String get statusDisplay {
+    switch (status.toUpperCase()) {
+      case 'H':
+        return 'Hadir (H)';
+      case 'I':
+        return 'Izin (I)';
+      case 'S':
+        return 'Sakit (S)';
+      case 'A':
+        return 'Alpa (A)';
+      case 'B':
+        return 'Belum Validasi (B)';
+      default:
+        return status.isNotEmpty ? status : '-';
+    }
+  }
 }
 
 class PresensiDetailData {
@@ -57,6 +77,9 @@ class PresensiDetailData {
   final String namaDosen;
   final List<PresensiSessionItem> items;
   final int prosentaseHadir;
+  final int prosentaseIzin;
+  final int prosentaseTanpaKeterangan;
+  final int prosentaseSakit;
   final int prosentaseBelumValidasi;
   final int akumulasiNilai;
 
@@ -65,6 +88,9 @@ class PresensiDetailData {
     required this.namaDosen,
     required this.items,
     required this.prosentaseHadir,
+    this.prosentaseIzin = 0,
+    this.prosentaseTanpaKeterangan = 0,
+    this.prosentaseSakit = 0,
     required this.prosentaseBelumValidasi,
     required this.akumulasiNilai,
   });
@@ -74,6 +100,9 @@ class PresensiDetailData {
         namaDosen: '',
         items: [],
         prosentaseHadir: 0,
+        prosentaseIzin: 0,
+        prosentaseTanpaKeterangan: 0,
+        prosentaseSakit: 0,
         prosentaseBelumValidasi: 0,
         akumulasiNilai: 0,
       );

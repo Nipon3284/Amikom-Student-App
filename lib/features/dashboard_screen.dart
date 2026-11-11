@@ -423,7 +423,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   label: 'Jadwal',
                   iconGradient: AppColors.primaryGradient,
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    HapticFeedback.selectionClick();
+                    ref.read(bottomNavIndexProvider.notifier).state = 1;
                   },
                   isDark: isDark,
                 ),
@@ -433,7 +434,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   label: 'Nilai KHS',
                   iconColor: isDark ? AppColors.amikomGoldDarkText : AppColors.amikomGold,
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    HapticFeedback.selectionClick();
+                    ref.read(bottomNavIndexProvider.notifier).state = 2;
                   },
                   isDark: isDark,
                 ),
@@ -443,7 +445,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   label: 'KRS',
                   iconColor: isDark ? AppColors.amikomPurpleLight : AppColors.amikomPurple,
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    HapticFeedback.selectionClick();
+                    ref.read(bottomNavIndexProvider.notifier).state = 3;
                   },
                   isDark: isDark,
                 ),

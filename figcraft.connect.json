@@ -1,0 +1,19 @@
+{
+  "links": [
+    {
+      "component": "Button / Primary",
+      "importPath": "package:amikomstudent/ui/components/button.dart",
+      "language": "flutter",
+      "name": "AmikomButton",
+      "template": "AmikomButton(variant: ButtonVariant.primary, state: ButtonState.{State}, label: 'Submit')"
+    },
+    {
+      "component": "Button / Primary",
+      "importPath": "@/components/ui/button",
+      "language": "react",
+      "name": "Button",
+      "template": "<Button variant=\"primary\" state=\"{State}\">{children}</Button>"
+    }
+  ],
+  "version": 1
+}
